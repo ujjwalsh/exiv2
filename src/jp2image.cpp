@@ -477,16 +477,19 @@ namespace Exiv2
 
             while (box.length && box.type != kJp2BoxTypeClose && io_->read((byte*)&box, sizeof(box)) == sizeof(box))
             {
-                long position = io_->tell();
+                size_t position = static_cast<size_t>(io_->tell());
                 box.length = getLong((byte*)&box.length, bigEndian);
                 box.type   = getLong((byte*)&box.type, bigEndian);
 
                 if ( bPrint ) {
-                    out << Internal::stringFormat("%8ld | %8ld | ",(size_t)(position-sizeof(box)),(size_t) box.length) << toAscii(box.type) << "      | " ;
+                    out << Internal::stringFormat("%8ld | %8ld | ", position-sizeof(Jp2BoxHeader), box.length) << toAscii(box.type) << "      | " ;
                     bLF = true ;
-                    if ( box.type == kJp2BoxTypeClose ) lf(out,bLF);
+                    if (box.type == kJp2BoxTypeClose)
+                        lf(out,bLF);
                 }
-                if ( box.type == kJp2BoxTypeClose ) break;
+
+                if (box.type == kJp2BoxTypeClose)
+                    break;
 
                 switch(box.type)
                 {
@@ -495,7 +498,7 @@ namespace Exiv2
                         lf(out,bLF);
 
                         while (io_->read((byte*)&subBox, sizeof(subBox)) == sizeof(subBox)
-                               && io_->tell() < position + (long) box.length) // don't read beyond the box!
+                               && io_->tell() < static_cast<long>(position + box.length)) // don't read beyond the box!
                         {
                             int address = io_->tell() - sizeof(subBox);
                             subBox.length = getLong((byte*)&subBox.length, bigEndian);

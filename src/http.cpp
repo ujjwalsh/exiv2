@@ -259,8 +259,9 @@ int Exiv2::http(Exiv2::Dictionary& request,Exiv2::Dictionary& response,std::stri
 
     ////////////////////////////////////
     // open the socket
-    int     sockfd = (int) socket(AF_INET , SOCK_STREAM,IPPROTO_TCP) ;
-    if (    sockfd < 0 ) return error(errors, "unable to create socket\n",nullptr,nullptr,0) ;
+    auto sockfd = socket(AF_INET , SOCK_STREAM,IPPROTO_TCP) ;
+    if (sockfd < 0)
+        return error(errors, "unable to create socket\n",nullptr,nullptr,0) ;
 
     // connect the socket to the server
     int     server  = -1 ;
@@ -296,7 +297,7 @@ int Exiv2::http(Exiv2::Dictionary& request,Exiv2::Dictionary& response,std::stri
 
     ////////////////////////////////////
     // format the request
-    int    n  = snprintf(buffer,buff_l,httpTemplate,verb,page,version,servername,header) ;
+    int  n  = snprintf(buffer,buff_l,httpTemplate,verb,page,version,servername,header) ;
     buffer[n] = 0 ;
     response["requestheaders"]=std::string(buffer,n);
 

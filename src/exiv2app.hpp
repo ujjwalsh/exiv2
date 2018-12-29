@@ -301,18 +301,18 @@ private:
 
     //! @name Helpers
     //@{
-    int setLogLevel(const std::string& optarg);
-    int evalGrep( const std::string& optarg);
-    int evalKey( const std::string& optarg);
-    int evalRename(int opt, const std::string& optarg);
-    int evalAdjust(const std::string& optarg);
-    int evalYodAdjust(const Yod& yod, const std::string& optarg);
-    int evalPrint(const std::string& optarg);
-    int evalPrintFlags(const std::string& optarg);
-    int evalDelete(const std::string& optarg);
-    int evalExtract(const std::string& optarg);
-    int evalInsert(const std::string& optarg);
-    int evalModify(int opt, const std::string& optarg);
+    int setLogLevel(const std::string& args);
+    int evalGrep( const std::string& args);
+    int evalKey(const std::string& args);
+    int evalRename(int opt, const std::string& args);
+    int evalAdjust(const std::string& args);
+    int evalYodAdjust(const Yod& yod, const std::string& args);
+    int evalPrint(const std::string& args);
+    int evalPrintFlags(const std::string& args);
+    int evalDelete(const std::string& args);
+    int evalExtract(const std::string& args);
+    int evalInsert(const std::string& args);
+    int evalModify(int opt, const std::string& args);
     //@}
 
 public:
@@ -329,7 +329,7 @@ public:
     int getopt(int argc, char* const argv[]);
 
     //! Handle options and their arguments.
-    int option(int opt, const std::string& optarg, int optopt) override;
+    int option(int opt, const std::string& args, int optChar) override;
 
     //! Handle non-option parameters.
     int nonoption(const std::string& argv) override;

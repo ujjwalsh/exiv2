@@ -74,9 +74,15 @@ if ( MINGW OR UNIX OR MSYS ) # MINGW, Linux, APPLE, CYGWIN
                         " -Wlogical-op"
                         " -Wdouble-promotion"
                         " -Wshadow"
-                        " -Wuseless-cast"
                         " -Wpointer-arith" # This warning is also enabled by -Wpedantic
                         " -Wformat=2"
+                        " -Wno-format-nonliteral"
+                        " -Wnon-virtual-dtor" # Warn if a class with virtual functions has a non virtual dtor
+                        #" -Wold-style-cast"
+                        " -Wcast-align"
+                        " -Wunused"
+                        " -Wnull-dereference"
+                        " -Wdouble-promotion"
                         #" -Wold-style-cast"
                     )
                 endif ()

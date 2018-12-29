@@ -577,7 +577,7 @@ namespace Exiv2 {
     {
         assert(p_->fp_ != 0);
         if (p_->switchMode(Impl::opWrite) != 0) return 0;
-        return (long)std::fwrite(data, 1, wcount, p_->fp_);
+        return static_cast<long>(std::fwrite(data, 1, wcount, p_->fp_));
     }
 
     long FileIo::write(BasicIo& src)
@@ -989,7 +989,8 @@ namespace Exiv2 {
     DataBuf FileIo::read(long rcount)
     {
         assert(p_->fp_ != 0);
-        if ( (size_t) rcount > size() ) throw Error(kerInvalidMalloc);
+        if ( static_cast<size_t>(rcount) > size() )
+            throw Error(kerInvalidMalloc);
         DataBuf buf(rcount);
         long readCount = read(buf.pData_, buf.size_);
         buf.size_ = readCount;
@@ -2539,7 +2540,7 @@ namespace Exiv2 {
             if (sftp_seek(fileHandler_, (uint32_t) (lowBlock * blockSize_)) < 0) throw Error(kerErrorMessage, "SFTP: unable to sftp_seek");
             size_t buffSize = (highBlock - lowBlock + 1) * blockSize_;
             std::vector<char> buffer(buffSize);
-            long nBytes = static_cast<long>(sftp_read(fileHandler_, &buffer.at(0), buffSize));
+            auto nBytes = sftp_read(fileHandler_, &buffer.at(0), buffSize);
             if (nBytes < 0) {
                 throw Error(kerErrorMessage, "SFTP: unable to sftp_read");
             }

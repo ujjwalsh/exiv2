@@ -373,16 +373,16 @@ namespace Exiv2
                                 {
                                     size_t   restore = io.tell();  // save
 
-                                    long jump= 10           ;
-                                    byte     bytes[20]          ;
-                                    const char* chars = (const char*) &bytes[0] ;
+                                    const uint64_t jump= 10;
+                                    byte     bytes[20];
+                                    const char* chars = (const char*) &bytes[0];
                                     io.seek(dir_offset, BasicIo::beg);  // position
-                                    io.read(bytes,jump    )     ;  // read
+                                    io.read(bytes,jump)     ;  // read
                                     bytes[jump]=0               ;
                                     if ( ::strcmp("Nikon",chars) == 0 )
                                     {
                                       // tag is an embedded tiff
-                                      std::vector<byte> nikon_bytes(static_cast<size_t>(count - jump));
+                                      std::vector<byte> nikon_bytes(count - jump);
 
                                       io.read(&nikon_bytes.at(0), (long)nikon_bytes.size());
                                       MemIo memIo(&nikon_bytes.at(0), (long)count - jump); // create a file

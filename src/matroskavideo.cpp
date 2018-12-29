@@ -670,21 +670,27 @@ namespace Exiv2 {
 
         case 0x0003:
             internalMt = find(matroskaTrackType, returnValue(buf, size));
-            stream = static_cast<long>(internalMt->val_);
+            if (internalMt)
+                stream = static_cast<long>(internalMt->val_);
             break;
 
-        case 0x3e383: case 0x383e3:
+        case 0x3e383:
+        case 0x383e3:
             internalMt = find(streamRate, stream);
             if (returnValue(buf, size)) {
                 double temp = 0.;
                 switch (stream) {
-                case 1: temp = 1000000000./static_cast<double>(returnValue(buf, size)); break;
-                case 2: temp = static_cast<double>(returnValue(buf, size) / 1000.); break;
+                    case 1:
+                        temp = 1000000000. / static_cast<double>(returnValue(buf, size));
+                        break;
+                    case 2:
+                        temp = returnValue(buf, size) / 1000.;
+                        break;
                 }
-                if (internalMt) xmpData_[internalMt->label_] = temp;
-            }
-            else
-                if (internalMt) xmpData_[internalMt->label_] = "Variable Bit Rate";
+                if (internalMt)
+                    xmpData_[internalMt->label_] = temp;
+            } else if (internalMt)
+                xmpData_[internalMt->label_] = "Variable Bit Rate";
             break;
 
         default:

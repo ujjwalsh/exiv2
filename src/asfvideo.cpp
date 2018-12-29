@@ -222,9 +222,9 @@ namespace Exiv2 {
      */
     char returnHEX(int n) {
         if(n >= 0 && n <= 9)
-            return (char)(n + 48);
+            return static_cast<char>(n + 48);
         else
-            return (char)(n + 55);
+            return static_cast<char>(n + 55);
     }
 
     /*!
@@ -325,7 +325,7 @@ namespace Exiv2 {
         io_->seek(0, BasicIo::beg);
         height_ = width_ = 1;
 
-        xmpData_["Xmp.video.FileSize"] = (double)io_->size()/(double)1048576;
+        xmpData_["Xmp.video.FileSize"] = io_->size()/1048576.;
         xmpData_["Xmp.video.FileName"] = io_->path();
         xmpData_["Xmp.video.MimeType"] = mimeType();
 
@@ -373,7 +373,7 @@ namespace Exiv2 {
     {
         uint64_t cur_pos = io_->tell();
         DataBuf buf(1000);
-        unsigned long count = 0, tempLength = 0;
+        unsigned long count = 0;
         buf.pData_[4] = '\0' ;
         Exiv2::Value::UniquePtr v = Exiv2::Value::create(Exiv2::xmpSeq);
 
@@ -421,8 +421,9 @@ namespace Exiv2 {
 
             while(count--) {
                 std::memset(buf.pData_, 0x0, buf.size_);
-                io_->read(buf.pData_, 1);   tempLength = (int)buf.pData_[0];
+                io_->read(buf.pData_, 1);
 
+                const long tempLength = static_cast<long>(buf.pData_[0]);
                 io_->read(buf.pData_, tempLength);
                 v->read(toString16(buf));
             }
@@ -449,7 +450,7 @@ namespace Exiv2 {
         avgTimePerFrame = getUint64_t(buf);
 
         if(previousStream < streamNumber_  &&  avgTimePerFrame != 0)
-            xmpData_["Xmp.video.FrameRate"] = (double)10000000/(double)avgTimePerFrame;
+            xmpData_["Xmp.video.FrameRate"] = 10000000./avgTimePerFrame;
 
         previousStream = streamNumber_;
         io_->seek(cur_pos + size, BasicIo::beg);
@@ -473,7 +474,7 @@ namespace Exiv2 {
             if (io_->error() || io_->eof()) throw Error(kerFailedToReadImageData);
             const TagDetails* td = find(contentDescriptionTags, i);
             assert(td);
-            std::string str((const char*)buf.pData_, length[i]);
+            std::string str(reinterpret_cast<const char*>(buf.pData_), length[i]);
             if (convertStringCharset(str, "UCS-2LE", "UTF-8")) {
                 xmpData_[td->label_] = str;
             }
@@ -512,7 +513,7 @@ namespace Exiv2 {
         io_->read(buf.pData_, 8);
         std::memset(buf.pData_, 0x0, buf.size_);
         io_->read(buf.pData_, 1);
-        streamNumber_ = (int)buf.pData_[0] & 127;
+        streamNumber_ = static_cast<int>(buf.pData_[0]) & 127;
 
         io_->read(buf.pData_, 5);
         std::memset(buf.pData_, 0x0, buf.size_);
@@ -767,12 +768,11 @@ namespace Exiv2 {
     void AsfVideo::aspectRatio()
     {
         //TODO - Make a better unified method to handle all cases of Aspect Ratio
-
-        double aspectRatio = (double)width_ / (double)height_;
+        double aspectRatio = static_cast<double>(width_) / static_cast<double>(height_);
         aspectRatio = floor(aspectRatio*10) / 10;
         xmpData_["Xmp.video.AspectRatio"] = aspectRatio;
 
-        int aR = (int) ((aspectRatio*10.0)+0.1);
+        int aR = static_cast<int>((aspectRatio*10.0)+0.1);
 
         switch  (aR) {
             case 13 : xmpData_["Xmp.video.AspectRatio"] = "4:3"     ; break;

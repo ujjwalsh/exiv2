@@ -569,7 +569,7 @@ enum {
 
 };
 
-#define kXMP_SchemaNode ((XMP_OptionBits)0x80000000UL)
+#define kXMP_SchemaNode (0x80000000UL)
 
 /// Option bit flags for the \c TXMPMeta property setting functions. These option bits are shared
 /// with the accessor functions:
