@@ -603,7 +603,7 @@ namespace Exiv2 {
             return 2;
         }
 
-        SXMPMeta meta(xmpPacket.data(), xmpPacket.size());
+        SXMPMeta meta(xmpPacket.data(), static_cast<XMP_StringLen>(xmpPacket.size()));
         SXMPIterator iter(meta);
         std::string schemaNs, propPath, propValue;
         XMP_OptionBits opt;
@@ -611,7 +611,6 @@ namespace Exiv2 {
             printNode(schemaNs, propPath, propValue, opt);
             if (XMP_PropIsAlias(opt)) {
                 throw Error(kerAliasesNotSupported, schemaNs, propPath, propValue);
-                continue;
             }
             if (XMP_NodeIsSchema(opt)) {
                 // Register unknown namespaces with Exiv2

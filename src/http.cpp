@@ -186,7 +186,11 @@ static Exiv2::Dictionary stringToDict(const std::string& s)
     return result;
 }
 
+#ifdef   WIN32
+static int makeNonBlocking(SOCKET sockfd)
+#else
 static int makeNonBlocking(int sockfd)
+#endif
 {
 #ifdef   WIN32
   ULONG  ioctl_opt = 1;

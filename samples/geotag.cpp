@@ -846,7 +846,7 @@ int main(int argc,const char* argv[])
                     char*  path = realpath(arg,buffer);
                     if (t && path) {
                         if (options.verbose)
-                            printf("%s %ld %s", path, t, asctime(localtime(&t)));
+                            printf("%s %ld %s", path, static_cast<long>(t), asctime(localtime(&t)));
                         gFiles.push_back(path);
                     }
                     if ( path && path != buffer ) ::free((void*) path);

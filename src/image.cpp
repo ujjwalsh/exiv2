@@ -970,12 +970,11 @@ namespace Exiv2 {
         return image;
     }
 
-    Image::UniquePtr ImageFactory::create(int type,
-                                        BasicIo::UniquePtr io)
+    Image::UniquePtr ImageFactory::create(int type, BasicIo::UniquePtr io)
     {
         // BasicIo instance does not need to be open
         const Registry* r = find(registry, type);
-        if (0 != r) {
+        if (r) {
             return r->newInstance_(std::move(io), true);
         }
         return Image::UniquePtr();
@@ -987,7 +986,7 @@ namespace Exiv2 {
     void append(Blob& blob, const byte* buf, uint32_t len)
     {
         if (len != 0) {
-            assert(buf != 0);
+            assert(buf != nullptr);
             Blob::size_type size = blob.size();
             if (blob.capacity() - size < len) {
                 blob.reserve(size + 65536);
@@ -995,6 +994,6 @@ namespace Exiv2 {
             blob.resize(size + len);
             std::memcpy(&blob[size], buf, len);
         }
-    } // append
+    }
 
 }                                       // namespace Exiv2
