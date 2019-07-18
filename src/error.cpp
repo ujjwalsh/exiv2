@@ -224,8 +224,48 @@ namespace Exiv2 {
     {
     }
 
-    template<>
-    void BasicError<char>::setMsg()
+    BasicError::BasicError(ErrorCode code)
+        : code_(code), count_(0)
+    {
+        setMsg();
+    }
+
+    BasicError::BasicError(ErrorCode code, const std::string& arg1) : code_(code), count_(1), arg1_(arg1)
+    {
+        setMsg();
+    }
+
+    BasicError::BasicError(ErrorCode code, const std::string &arg1, const std::string &arg2)
+        : code_(code), count_(2), arg1_(arg1), arg2_(arg2)
+    {
+        setMsg();
+    }
+
+    BasicError::BasicError(ErrorCode code, const std::string &arg1, const std::string &arg2, const std::string &arg3)
+        : code_(code),
+          count_(3),
+          arg1_(arg1),
+          arg2_(arg2),
+          arg3_(arg3)
+    {
+        setMsg();
+    }
+
+    BasicError::~BasicError() noexcept
+    {
+    }
+
+    int BasicError::code() const noexcept
+    {
+        return code_;
+    }
+
+    const char* BasicError::what() const noexcept
+    {
+        return msg_.c_str();
+    }
+
+    void BasicError::setMsg()
     {
         std::string msg = _(errMsg(code_));
         std::string::size_type pos;
@@ -252,48 +292,7 @@ namespace Exiv2 {
             }
         }
         msg_ = msg;
-#ifdef EXV_UNICODE_PATH
-        wmsg_ = s2ws(msg);
-#endif
     }
-#ifdef __APPLE__
-    template class EXIV2API BasicError<char>;
-#endif
-
-#ifdef EXV_UNICODE_PATH
-    template<>
-    void BasicError<wchar_t>::setMsg()
-    {
-        std::string s = _(errMsg(code_));
-        std::wstring wmsg(s.begin(), s.end());
-        std::wstring::size_type pos;
-        pos = wmsg.find(L"%0");
-        if (pos != std::wstring::npos) {
-            wmsg.replace(pos, 2, toBasicString<wchar_t>(code_));
-        }
-        if (count_ > 0) {
-            pos = wmsg.find(L"%1");
-            if (pos != std::wstring::npos) {
-                wmsg.replace(pos, 2, arg1_);
-            }
-        }
-        if (count_ > 1) {
-            pos = wmsg.find(L"%2");
-            if (pos != std::wstring::npos) {
-                wmsg.replace(pos, 2, arg2_);
-            }
-        }
-        if (count_ > 2) {
-            pos = wmsg.find(L"%3");
-            if (pos != std::wstring::npos) {
-                wmsg.replace(pos, 2, arg3_);
-            }
-        }
-        wmsg_ = wmsg;
-        msg_ = ws2s(wmsg);
-    }
-    template class EXIV2API BasicError<wchar_t>;
-#endif
 
     const char* errMsg(int code)
     {

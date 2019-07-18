@@ -155,15 +155,6 @@ namespace Exiv2 {
 # pragma warning( disable : 4275 )
 #endif
 
-    //! Generalised toString function
-    template<typename charT, typename T>
-    std::basic_string<charT> toBasicString(const T& arg)
-    {
-        std::basic_ostringstream<charT> os;
-        os << arg;
-        return os.str();
-    }
-
     /*!
       @brief Error class interface. Allows the definition and use of a hierarchy
              of error classes which can all be handled in one catch block.
@@ -255,12 +246,8 @@ namespace Exiv2 {
         kerMallocFailed,
     };
 
-    /*!
-      @brief Simple error class used for exceptions. An output operator is
-             provided to print errors to a stream.
-     */
-    template<typename charT>
-    class BasicError : public AnyError {
+    /// @brief Simple error class used for exceptions. An output operator is provided to print errors to a stream.
+    class EXIV2API BasicError : public AnyError {
     public:
         //! @name Creators
         //@{
@@ -268,16 +255,13 @@ namespace Exiv2 {
         explicit BasicError(ErrorCode code);
 
         //! Constructor taking an error code and one argument
-        template<typename A>
-        BasicError(ErrorCode code, const A& arg1);
+        BasicError(ErrorCode code, const std::string& arg1);
 
         //! Constructor taking an error code and two arguments
-        template<typename A, typename B>
-        BasicError(ErrorCode code, const A& arg1, const B& arg2);
+        BasicError(ErrorCode code, const std::string& arg1, const std::string& arg2);
 
         //! Constructor taking an error code and three arguments
-        template<typename A, typename B, typename C>
-        BasicError(ErrorCode code, const A& arg1, const B& arg2, const C& arg3);
+        BasicError(ErrorCode code, const std::string& arg1, const std::string& arg2, const std::string& arg3);
 
         //! Virtual destructor. (Needed because of noexcept)
         virtual ~BasicError() noexcept;
@@ -291,40 +275,26 @@ namespace Exiv2 {
                  is valid only as long as the BasicError object exists.
          */
         const char* what() const noexcept override;
-#ifdef EXV_UNICODE_PATH
-        /*!
-          @brief Return the error message as a wchar_t-string. The pointer returned by
-                 wwhat() is valid only as long as the BasicError object exists.
-         */
-        const wchar_t* wwhat() const noexcept;
-#endif
         //@}
 
     private:
         //! @name Manipulators
         //@{
         //! Assemble the error message from the arguments
-        EXIV2API void setMsg();
+        void setMsg();
         //@}
 
         // DATA
-        ErrorCode code_;                       //!< Error code
-        int count_;                             //!< Number of arguments
-        std::basic_string<charT> arg1_;         //!< First argument
-        std::basic_string<charT> arg2_;         //!< Second argument
-        std::basic_string<charT> arg3_;         //!< Third argument
-        std::string              msg_;          //!< Complete error message
-#ifdef EXV_UNICODE_PATH
-        std::wstring             wmsg_;         //!< Complete error message as a wide string
-#endif
+        ErrorCode code_;           //!< Error code
+        int count_;                //!< Number of arguments
+        std::string arg1_;         //!< First argument
+        std::string arg2_;         //!< Second argument
+        std::string arg3_;         //!< Third argument
+        std::string msg_;          //!< Complete error message
     }; // class BasicError
 
     //! Error class used for exceptions (std::string based)
-    typedef BasicError<char> Error;
-#ifdef EXV_UNICODE_PATH
-    //! Error class used for exceptions (std::wstring based)
-    typedef BasicError<wchar_t> WError;
-#endif
+    typedef BasicError Error;
 
 // *****************************************************************************
 // free functions, template and inline definitions
@@ -332,63 +302,6 @@ namespace Exiv2 {
     //! Return the error message for the error with code \em code.
     const char* errMsg(int code);
 
-    template<typename charT>
-    BasicError<charT>::BasicError(ErrorCode code)
-        : code_(code), count_(0)
-    {
-        setMsg();
-    }
-
-    template<typename charT> template<typename A>
-    BasicError<charT>::BasicError(ErrorCode code, const A& arg1)
-        : code_(code), count_(1), arg1_(toBasicString<charT>(arg1))
-    {
-        setMsg();
-    }
-
-    template<typename charT> template<typename A, typename B>
-    BasicError<charT>::BasicError(ErrorCode code, const A& arg1, const B& arg2)
-        : code_(code), count_(2),
-          arg1_(toBasicString<charT>(arg1)),
-          arg2_(toBasicString<charT>(arg2))
-    {
-        setMsg();
-    }
-
-    template<typename charT> template<typename A, typename B, typename C>
-    BasicError<charT>::BasicError(ErrorCode code, const A& arg1, const B& arg2, const C& arg3)
-        : code_(code), count_(3),
-          arg1_(toBasicString<charT>(arg1)),
-          arg2_(toBasicString<charT>(arg2)),
-          arg3_(toBasicString<charT>(arg3))
-    {
-        setMsg();
-    }
-
-    template<typename charT>
-    BasicError<charT>::~BasicError() noexcept
-    {
-    }
-
-    template<typename charT>
-    int BasicError<charT>::code() const noexcept
-    {
-        return code_;
-    }
-
-    template<typename charT>
-    const char* BasicError<charT>::what() const noexcept
-    {
-        return msg_.c_str();
-    }
-
-#ifdef EXV_UNICODE_PATH
-    template<typename charT>
-    const wchar_t* BasicError<charT>::wwhat() const noexcept
-    {
-        return wmsg_.c_str();
-    }
-#endif
 
 #ifdef _MSC_VER
 # pragma warning( default : 4275 )

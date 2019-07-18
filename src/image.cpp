@@ -763,7 +763,7 @@ namespace Exiv2 {
     {
         const Registry* r = find(registry, type);
         if (!r)
-            throw Error(kerUnsupportedImageType, static_cast<int>(type));
+            throw Error(kerUnsupportedImageType, std::to_string(static_cast<int>(type)));
         AccessMode am = amNone;
         switch (metadataId) {
         case mdNone:
@@ -929,7 +929,7 @@ namespace Exiv2 {
         BasicIo::UniquePtr io(std::move(fileIo));
         Image::UniquePtr image = create(type, std::move(io));
         if (!image)
-            throw Error(kerUnsupportedImageType, static_cast<int>(type));
+            throw Error(kerUnsupportedImageType, std::to_string(static_cast<int>(type)));
         return image;
     }
 
@@ -955,7 +955,7 @@ namespace Exiv2 {
         BasicIo::UniquePtr io(new MemIo);
         Image::UniquePtr image = create(type, std::move(io));
         if (image.get() == 0) {
-            throw Error(kerUnsupportedImageType, static_cast<int>(type));
+            throw Error(kerUnsupportedImageType, std::to_string(static_cast<int>(type)));
         }
         return image;
     }

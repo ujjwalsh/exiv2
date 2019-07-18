@@ -531,7 +531,7 @@ namespace Exiv2 {
             SXMPMeta::DumpNamespaces(nsDumper,&dict);
             if (bInit) terminate();
         } catch (const XMP_Error& e) {
-            throw Error(kerXMPToolkitError, e.GetID(), e.GetErrMsg());
+            throw Error(kerXMPToolkitError, std::to_string(e.GetID()), e.GetErrMsg());
         }
     }
 #else
@@ -583,7 +583,7 @@ namespace Exiv2 {
 //          SXMPMeta::DeleteNamespace(ns.c_str());
         }
         catch (const XMP_Error& e) {
-            throw Error(kerXMPToolkitError, e.GetID(), e.GetErrMsg());
+            throw Error(kerXMPToolkitError, std::to_string(e.GetID()), e.GetErrMsg());
         }
 #endif
     } // XmpParser::unregisterNs
@@ -637,7 +637,7 @@ namespace Exiv2 {
                     if (   !haveNext
                         || !XMP_PropIsSimple(opt)
                         || !XMP_PropHasLang(opt)) {
-                        throw Error(kerDecodeLangAltPropertyFailed, propPath, opt);
+                        throw Error(kerDecodeLangAltPropertyFailed, propPath, std::to_string(opt));
                     }
                     const std::string text = propValue;
                     // Get the language qualifier
@@ -647,7 +647,7 @@ namespace Exiv2 {
                         || !XMP_PropIsSimple(opt)
                         || !XMP_PropIsQualifier(opt)
                         || propPath.substr(propPath.size() - 8, 8) != "xml:lang") {
-                        throw Error(kerDecodeLangAltQualifierFailed, propPath, opt);
+                        throw Error(kerDecodeLangAltQualifierFailed, propPath, std::to_string(opt));
                     }
                     val->value_[propValue] = text;
                 }
@@ -702,14 +702,14 @@ namespace Exiv2 {
                 continue;
             }
             // Don't let any node go by unnoticed
-            throw Error(kerUnhandledXmpNode, key->key(), opt);
+            throw Error(kerUnhandledXmpNode, key->key(), std::to_string(opt));
         } // iterate through all XMP nodes
 
         return 0;
     }
 #ifndef SUPPRESS_WARNINGS
     catch (const XMP_Error& e) {
-        EXV_ERROR << Error(kerXMPToolkitError, e.GetID(), e.GetErrMsg()) << "\n";
+        EXV_ERROR << Error(kerXMPToolkitError, std::to_string(e.GetID()), e.GetErrMsg()) << "\n";
         xmpData.clear();
         return 3;
     }
@@ -824,7 +824,7 @@ namespace Exiv2 {
     }
 #ifndef SUPPRESS_WARNINGS
     catch (const XMP_Error& e) {
-        EXV_ERROR << Error(kerXMPToolkitError, e.GetID(), e.GetErrMsg()) << "\n";
+        EXV_ERROR << Error(kerXMPToolkitError, std::to_string(e.GetID()), e.GetErrMsg()) << "\n";
         return 3;
     }
 #else

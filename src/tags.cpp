@@ -325,11 +325,11 @@ namespace Exiv2 {
         IfdId ifdId = groupId(groupName);
         // Todo: Test if this condition can be removed
         if (!Internal::isExifIfd(ifdId) && !Internal::isMakerIfd(ifdId)) {
-            throw Error(kerInvalidIfdId, ifdId);
+            throw Error(kerInvalidIfdId, std::to_string(ifdId));
         }
         const TagInfo* ti = tagInfo(tag, ifdId);
         if (ti == 0) {
-            throw Error(kerInvalidIfdId, ifdId);
+            throw Error(kerInvalidIfdId, std::to_string(ifdId));
         }
         p_->groupName_ = groupName;
         p_->makeKey(tag, ifdId, ti);
@@ -340,7 +340,7 @@ namespace Exiv2 {
     {
         IfdId ifdId = static_cast<IfdId>(ti.ifdId_);
         if (!Internal::isExifIfd(ifdId) && !Internal::isMakerIfd(ifdId)) {
-            throw Error(kerInvalidIfdId, ifdId);
+            throw Error(kerInvalidIfdId, std::to_string(ifdId));
         }
         p_->groupName_ = Exiv2::groupName(ifdId);
         p_->makeKey(ti.tag_, ifdId, &ti);
