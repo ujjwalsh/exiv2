@@ -13,6 +13,9 @@ matrix:
     - name: "Ubuntu 16.04 - gcc-5.4 (Release)"
       os: linux
       dist: xenial
+      arch:
+        - ppc64le
+        - amd64
       sudo: required
       compiler: gcc
       env:
@@ -21,6 +24,9 @@ matrix:
     - name: "Ubuntu 16.04 - gcc-5.4 (Debug)"
       os: linux
       dist: xenial
+      arch:
+        - ppc64le
+        - amd64
       sudo: required
       compiler: gcc
       env:
@@ -29,6 +35,9 @@ matrix:
     - name: "Ubuntu 16.04 - gcc-5.4 with coverage"
       os: linux
       dist: xenial
+      arch:
+        - ppc64le
+        - amd64
       sudo: required
       compiler: gcc
       env:
@@ -38,6 +47,9 @@ matrix:
     - name: "Ubuntu 16.04 - gcc-5.4 with Valgrind"
       os: linux
       dist: xenial
+      arch:
+        - ppc64le
+        - amd64
       sudo: required
       compiler: gcc
       env:
@@ -47,6 +59,9 @@ matrix:
     - name: "Ubuntu 16.04 - gcc-5.4 with sanitizers"
       os: linux
       dist: xenial
+      arch:
+        - ppc64le
+        - amd64
       sudo: required
       compiler: gcc
       env:
@@ -56,6 +71,9 @@ matrix:
     - name: "Ubuntu 16.04 - CLANG 7.0 (Release)"
       os: linux
       dist: xenial
+      arch:
+        - ppc64le
+        - amd64
       sudo: required
       compiler: clang
       env:
@@ -64,6 +82,9 @@ matrix:
     - name: "Ubuntu 16.04 - CLANG 7.0 (Debug)"
       os: linux
       dist: xenial
+      arch:
+        - ppc64le
+        - amd64
       sudo: required
       compiler: clang
       env:
